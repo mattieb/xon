@@ -174,7 +174,7 @@ def dumpe(obj, convertvalues=False, wrap=None):
     hastext = False
     hassubobjs = False
 
-    for k in value:
+    for k in sorted([str(k) for k in value.iterkeys()]):
         v = value[k]
 
         if k.startswith('@'):

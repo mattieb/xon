@@ -209,8 +209,8 @@ class LoadTests(unittest.TestCase):
     def testwrap(self):
         '''wrap an arbitrary object in a parent tag'''
         obj = {'one': 'two', 'three': ['four', 'five']}
-        xml = ('<wrapper><three>four</three><three>five</three>'
-               '<one>two</one></wrapper>')
+        xml = ('<wrapper><one>two</one>'
+               '<three>four</three><three>five</three></wrapper>')
         self.assertEqual(obj, xon.loads(xml, unwrap=True))
         self.assertEqual(xml, xon.dumps(obj, wrap='wrapper'))
 

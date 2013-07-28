@@ -22,7 +22,7 @@
 from distutils.core import setup
 
 setup(name='xon',
-      version='1.0',
+      version='1.0.1',
       author='Matt Behrens',
       author_email='matt@zigg.com',
       url='http://www.zigg.com/code/xon/',
