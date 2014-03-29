@@ -27,6 +27,7 @@ setup(name='xon',
       author_email='matt@zigg.com',
       url='http://www.zigg.com/code/xon/',
       description='XML Object Notation serializer/deserializer',
+      long_description=open('README.rst', 'r').read(),
       classifiers=['Development Status :: 5 - Production/Stable',
 		   'License :: OSI Approved :: MIT License'],
       py_modules=['xon'])
