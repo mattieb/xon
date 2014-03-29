@@ -2,7 +2,7 @@ xon
 ---
 
 xon is a Python implementation of something I've come to call "XML
-Object Notation", or XON. It generally conforms to the ```pickle``
+Object Notation", or XON. It generally conforms to the `pickle
 <http://docs.python.org/library/pickle.html>`__ protocol, which
 means you interact with it using ``load`` and ``dump`` functions.
 
