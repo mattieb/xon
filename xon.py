@@ -32,6 +32,12 @@ try:
     import xml.etree.ElementTree as ET
 except ImportError:
     import elementtree.ElementTree as ET
+try:
+    text_types = (str,unicode)
+    py2 = True
+except:
+    text_types = (str,)
+    py2 = False
 
 def tailedchildren(elem):
     '''check for non-whitespace tails on an Element's children'''
@@ -75,8 +81,10 @@ def loade(elem, unwrap=True, convertvalues=False):
         value['@' + attr] = elem.get(attr)
 
     if tailedchildren(elem):
-        text = elem.text + ''.join([ET.tostring(child)
-                                    for child in elem.getchildren()])
+        if py2:
+            text = elem.text + ''.join([ET.tostring(child) for child in elem.getchildren()])
+        else:
+            text = elem.text + ''.join([ET.tostring(child).decode('utf-8') for child in elem.getchildren()])
         value['#text'] = ' '.join(text.split())
 
     else:
@@ -105,9 +113,9 @@ def loade(elem, unwrap=True, convertvalues=False):
                 value[tag] = loade(child, unwrap=True,
                                    convertvalues=convertvalues)
 
-    keys = value.keys()
+    keys = list(value.keys())
     if len(keys):
-        if value.keys() == ['#text']:
+        if list(value.keys()) == ['#text']:
             value = value['#text']
 
     else:
@@ -161,9 +169,9 @@ def dumpe(obj, convertvalues=False, wrap=None):
         obj = {wrap: obj}
 
     if len(obj.keys()) > 1:
-        raise ValueError, 'obj has more than one key'
+        raise ValueError('obj has more than one key')
 
-    tag = obj.keys()[0]
+    tag = list(obj.keys())[0]
     value = obj[tag]
 
     elem = ET.Element(tag)
@@ -174,7 +182,7 @@ def dumpe(obj, convertvalues=False, wrap=None):
     hastext = False
     hassubobjs = False
 
-    for k in sorted([str(k) for k in value.iterkeys()]):
+    for k in sorted([str(k) for k in value.keys()]):
         v = value[k]
 
         if k.startswith('@'):
@@ -187,8 +195,8 @@ def dumpe(obj, convertvalues=False, wrap=None):
             if convertvalues:
                 v = stringify(v)
             else:
-                if v is not None and type(v) not in (str, unicode):
-                    raise TypeError, 'value %r is unserializable' % v
+                if v is not None and not type(v) in text_types:
+                    raise TypeError('value %r is unserializable' % v)
             elem.text = v
 
         else:
@@ -216,7 +224,11 @@ def dumps(obj, convertvalues=False, wrap=None, encoding=None):
     encoding -- see ElementTree.tostring
     
     '''
-    return ET.tostring(dumpe(obj, convertvalues, wrap), encoding=encoding)
+    s = ET.tostring(dumpe(obj, convertvalues, wrap), encoding=encoding)
+    try:
+        return s.decode("utf-8")
+    except:
+        return s
 
 def dump(obj, fp, convertvalues=False, wrap=None, encoding=None):
     '''dump object to a file
@@ -229,6 +241,6 @@ def dump(obj, fp, convertvalues=False, wrap=None, encoding=None):
     encoding -- see ElementTree.tostring
     
     '''
-    fp.write(dumps(obj, convertvalues, wrap, encoding))
+    fp.write(str(dumps(obj, convertvalues, wrap, encoding)))
 
 # vim: ft=python tabstop=8 expandtab shiftwidth=4 softtabstop=4
